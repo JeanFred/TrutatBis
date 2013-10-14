@@ -7,7 +7,7 @@ __authors__ = 'User:Jean-Frédéric'
 import os
 import sys
 from uploadlibrary import metadata
-from uploadlibrary.UploadBot import DataIngestionBot
+from uploadlibrary.UploadBot import DataIngestionBot, UploadBotArgumentParser
 from uploadlibrary.PostProcessing import process_DIMS
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -58,15 +58,9 @@ def main(args):
 
 
 if __name__ == "__main__":
-    from argparse import ArgumentParser
-    parser = ArgumentParser(description="Process metadata and upload to Commons")
-    parser.add_argument('--make-alignment', action="store_true",
-                        help='')
-    parser.add_argument('--post-process', action="store_true",
-                        help='')
-    parser.add_argument('--dry-run', action="store_true",
-                        help='')
-    parser.add_argument('--upload', action="store_true",
-                        help='')
+    parser = UploadBotArgumentParser()
     arguments = parser.parse_args()
-    main(arguments)
+    if not any(arguments.__dict__.values()):
+        parser.print_help()
+    else:
+        main(arguments)
