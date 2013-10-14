@@ -47,9 +47,13 @@ def main(args):
             }
         reader = collection.post_process_collection(mapping)
         template_name = 'User:Jean-Frédéric/TrutatBis/Ingestion'.encode('utf-8')
-        titlefmt = "%(Titre)s - Fonds Trutat - %(Cote)s"
-        uploadBot = DataIngestionBot(reader=reader,
-                                     titlefmt=titlefmt,
+        front_titlefmt = ""
+        variable_titlefmt = "%(Titre)s"
+        rear_titlefmt= " - Fonds Trutat - %(Cote)s"
+        uploadBot = DataIngestionBot(reader=iter(collection.records),
+                                     front_titlefmt=front_titlefmt,
+                                     rear_titlefmt=rear_titlefmt,
+                                     variable_titlefmt=variable_titlefmt,
                                      pagefmt=template_name)
         if args.upload:
             uploadBot.doSingle()
