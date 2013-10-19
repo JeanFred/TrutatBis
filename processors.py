@@ -47,15 +47,13 @@ def look_for_date(field, old_field_value):
     Add the date and the year if they were found
 
     """
-    print "Considering"
+
     (date, year) = look_for_date_unwrapped(old_field_value)
 
     result = {field: old_field_value}
     if date:
-        print "--> adding Date %s " % date
         result['date'] = date
     if year:
-        print "--> adding year %s " % year
         result['year'] = year
     return result
 
@@ -137,27 +135,22 @@ def look_for_date_unwrapped(text):
     centuryR = re.search(centuryPattern, text)
 
     if betweenDateR:
-        print "betweenDateR"
         date = u'{{Other date|between|%s|%s}}' % (betweenDateR.group('year1'),
                                                   betweenDateR.group('year2'))
         return (date, None)
 
     elif orDateR:
-        print "orDateR"
         date = u'{{Other date|or|%s|%s}}' % (orDateR.group('year1'),
                                              orDateR.group('year2'))
         return (date, None)
 
     elif decadeDateR:
-        print "decadeDateR"
         date = u'{{Other date|decade|%s}}' % (decadeDateR.group('year'))
         return (date, None)
 
     elif fullDateR:
-        print "fullDateR"
         month = fullDateR.group('month').lower()
         if month in monthList.keys():
-            print "%s is a key" % month
             monthNum = monthList[month]
             year = fullDateR.group('year')
             date = u'%s-%s-%s' % (year,
@@ -169,7 +162,6 @@ def look_for_date_unwrapped(text):
             return (None, None)
 
     elif circaDateR:
-        print "circaDateR"
         month = circaDateR.group('month').lower()
         if month in monthList.keys():
             year = circaDateR.group('year')
@@ -178,13 +170,11 @@ def look_for_date_unwrapped(text):
             return (date, year)
 
     elif circaYearR:
-        print "circaYearR"
         circaYear = circaYearR.group('year')
         date = u'{{Other date|circa|%s}}' % (circaYear)
         return (date, circaYear)
 
     elif monthDateR:
-        print "monthDateR"
         month = monthDateR.group('month').lower()
         if month in monthList.keys():
             year = monthDateR.group('year')
@@ -195,9 +185,7 @@ def look_for_date_unwrapped(text):
             return (None, None)
 
     elif centuryR:
-        print "centuryR"
         century = centuryR.group('century')
-        print centuryR.groups()
         date = '{{Other date|century|%s}}' % (century)
 
         if centuryR.groupdict()['qualifier']:
@@ -207,6 +195,4 @@ def look_for_date_unwrapped(text):
         return (date, None)
 
     else:
-        print "Nothing found"
-        print text
         return (None, None)
