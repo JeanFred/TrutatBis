@@ -12,6 +12,14 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
+def extract_from_cote(cote):
+    """Return the identifiers for a given cote text."""
+    groups = cote.split(' - ')
+    for group in groups:
+        for item in extract_from_range(group):
+            yield item
+
+
 def extract_from_range(text):
     """Return the identifiers for a given textual range."""
     pattern = re.compile(u"""
