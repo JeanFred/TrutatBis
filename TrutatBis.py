@@ -9,6 +9,7 @@ import sys
 from uploadlibrary import metadata
 from uploadlibrary.UploadBot import DataIngestionBot, UploadBotArgumentParser
 from uploadlibrary.PostProcessing import process_DIMS
+import processors
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -33,19 +34,16 @@ def main(args):
 
     alignment_template = 'User:Jean-Frédéric/AlignmentRow'.encode('utf-8')
 
-    if args.make_alignment:
-        for key, value in collection.count_metadata_values().items():
-            collection.write_dict_as_wiki(value, key, 'wiki',
-                                          alignment_template)
-
     if args.post_process:
-        mapping_fields = ['Type de document', 'Format', 'Support', 'Technique']
-        collection.retrieve_metadata_alignments(mapping_fields,
-                                                alignment_template)
-        mapping = {
-            'Format': process_DIMS,
+        #mapping_fields = ['Type de document', 'Support', 'Technique']
+        #collection.retrieve_metadata_alignments(mapping_fields,
+                                                #alignment_template)
+        mapping_methods = {
+            'Format': (processors.parse_format, {}),
+            'Analyse': (processors.look_for_date, {}),
             }
-        reader = collection.post_process_collection(mapping)
+        print "Ready to post-process..."
+        reader = collection.post_process_collection(mapping_methods)
         template_name = 'User:Jean-Frédéric/TrutatBis/Ingestion'.encode('utf-8')
         front_titlefmt = ""
         variable_titlefmt = "%(Titre)s"
