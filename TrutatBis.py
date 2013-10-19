@@ -8,7 +8,7 @@ import os
 import sys
 from uploadlibrary import metadata
 from uploadlibrary.UploadBot import DataIngestionBot, UploadBotArgumentParser
-from uploadlibrary.PostProcessing import process_DIMS
+import uploadlibrary.PostProcessing as commonprocessors
 import processors
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -35,12 +35,15 @@ def main(args):
     alignment_template = 'User:Jean-Frédéric/AlignmentRow'.encode('utf-8')
 
     if args.post_process:
-        #mapping_fields = ['Type de document', 'Support', 'Technique']
-        #collection.retrieve_metadata_alignments(mapping_fields,
-                                                #alignment_template)
+        mapping_fields = ['Type de document', 'Support', 'Technique', 'Auteur']
+        mapper = commonprocessors.retrieve_metadata_alignments(mapping_fields,
+                                                alignment_template)
         mapping_methods = {
             'Format': (processors.parse_format, {}),
             'Analyse': (processors.look_for_date, {}),
+            'Auteur': (commonprocessors.process_with_alignment, {'mapper': mapper}),
+            'Support': (commonprocessors.process_with_alignment, {'mapper': mapper}),
+            'Technique': (commonprocessors.process_with_alignment, {'mapper': mapper}),
             }
         print "Ready to post-process..."
         reader = collection.post_process_collection(mapping_methods)
