@@ -32,7 +32,7 @@ def extract_from_range(text):
     if match:
         for num in range(int(match.group('begin')),
                          int(match.group('end')) + 1):
-            yield "51Fi%s" % num
+            yield "51Fi{0:03d}".format(num)
     else:
         yield text
 
