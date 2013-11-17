@@ -4,7 +4,11 @@
 
 __authors__ = 'User:Jean-Frédéric'
 
+import sys
 import re
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 def parse_format(field, old_field_value):
@@ -196,3 +200,18 @@ def look_for_date_unwrapped(text):
 
     else:
         return (None, None)
+
+
+def match_identifier_to_categories(field, old_field_value, mapper=None):
+    """Match the identifier to categories through two mappings."""
+    new_value = dict()
+    from index_converter import get_mapper
+    mapper_id_to_places, place_mapper = get_mapper('index.csv')
+    place_categories = []
+    for place in mapper_id_to_places.get(old_field_value, []):
+        (value, category) = mapper['Places'].get(unicode(place), ("", []))
+        if category:
+            place_categories.append(category)
+    new_value[field] = old_field_value
+    new_value['categories'] = place_categories
+    return new_value
