@@ -35,7 +35,7 @@ def main(args):
     alignment_template = 'User:Jean-Frédéric/AlignmentRow'.encode('utf-8')
 
     if args.post_process:
-        mapping_fields = ['Type de document', 'Support', 'Technique', 'Auteur']
+        mapping_fields = ['Support', 'Technique', 'Auteur', 'Places']
         mapper = commonprocessors.retrieve_metadata_alignments(mapping_fields,
                                                 alignment_template)
         mapping_methods = {
@@ -44,6 +44,7 @@ def main(args):
             'Auteur': (commonprocessors.process_with_alignment, {'mapper': mapper}),
             'Support': (commonprocessors.process_with_alignment, {'mapper': mapper}),
             'Technique': (commonprocessors.process_with_alignment, {'mapper': mapper}),
+            'Cote': (processors.match_identifier_to_categories, {'mapper': mapper}),
             }
         print "Ready to post-process..."
         reader = collection.post_process_collection(mapping_methods)
