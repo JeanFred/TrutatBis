@@ -47,11 +47,12 @@ def main(args):
             'Cote': (processors.match_identifier_to_categories, {'mapper': mapper}),
             }
         print "Ready to post-process..."
-        reader = collection.post_process_collection(mapping_methods)
+        categories_counter, categories_count_per_file = collection.post_process_collection(mapping_methods)
+        metadata.categorisation_statistics(categories_counter, categories_count_per_file)
         template_name = 'User:Jean-Frédéric/TrutatBis/Ingestion'.encode('utf-8')
         front_titlefmt = ""
         variable_titlefmt = "%(Titre)s"
-        rear_titlefmt= " - Fonds Trutat - %(Cote)s"
+        rear_titlefmt = " - Fonds Trutat - %(Cote)s"
         uploadBot = DataIngestionBot(reader=iter(collection.records),
                                      front_titlefmt=front_titlefmt,
                                      rear_titlefmt=rear_titlefmt,
