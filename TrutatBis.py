@@ -47,20 +47,22 @@ def main(args):
             'Cote': (processors.match_identifier_to_categories, {'mapper': mapper}),
         }
         categories_counter, categories_count_per_file = collection.post_process_collection(mapping_methods)
-        metadata.categorisation_statistics(categories_counter, categories_count_per_file)
-        template_name = 'User:Jean-Frédéric/TrutatBis/Ingestion'.encode('utf-8')
-        front_titlefmt = ""
-        variable_titlefmt = "%(Titre)s"
-        rear_titlefmt = " - Fonds Trutat - %(Cote)s"
-        uploadBot = DataIngestionBot(reader=iter(collection.records),
-                                     front_titlefmt=front_titlefmt,
-                                     rear_titlefmt=rear_titlefmt,
-                                     variable_titlefmt=variable_titlefmt,
-                                     pagefmt=template_name)
-        if args.upload:
-            uploadBot.doSingle()
-        elif args.dry_run:
-            uploadBot.dry_run()
+        #metadata.categorisation_statistics(categories_counter, categories_count_per_file)
+
+    template_name = 'Commons:Batch_uploading/Fonds_Eugène_Trutat_bis/Ingestion'.decode('utf-8').encode('utf-8')
+    front_titlefmt = ""
+    variable_titlefmt = "%(Titre)s"
+    rear_titlefmt = " - Fonds Trutat - %(Cote)s"
+    uploadBot = DataIngestionBot(reader=iter(reversed(collection.records)),
+                                 front_titlefmt=front_titlefmt,
+                                 rear_titlefmt=rear_titlefmt,
+                                 variable_titlefmt=variable_titlefmt,
+                                 pagefmt=template_name,
+                                 subst=True)
+    if args.upload:
+        uploadBot.doSingle()
+    elif args.dry_run:
+        uploadBot.dry_run()
 
 
 if __name__ == "__main__":
