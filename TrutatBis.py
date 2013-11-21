@@ -37,7 +37,7 @@ def main(args):
     if args.post_process:
         mapping_fields = ['Support', 'Technique', 'Auteur', 'Places']
         mapper = commonprocessors.retrieve_metadata_alignments(mapping_fields,
-                                                alignment_template)
+                                                               alignment_template)
         mapping_methods = {
             'Format': (processors.parse_format, {}),
             'Analyse': (processors.look_for_date, {}),
@@ -45,8 +45,7 @@ def main(args):
             'Support': (commonprocessors.process_with_alignment, {'mapper': mapper}),
             'Technique': (commonprocessors.process_with_alignment, {'mapper': mapper}),
             'Cote': (processors.match_identifier_to_categories, {'mapper': mapper}),
-            }
-        print "Ready to post-process..."
+        }
         categories_counter, categories_count_per_file = collection.post_process_collection(mapping_methods)
         metadata.categorisation_statistics(categories_counter, categories_count_per_file)
         template_name = 'User:Jean-Frédéric/TrutatBis/Ingestion'.encode('utf-8')
