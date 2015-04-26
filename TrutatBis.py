@@ -6,6 +6,7 @@ __authors__ = 'User:Jean-Frédéric'
 
 import os
 import sys
+import itertools
 from uploadlibrary import metadata
 from uploadlibrary.UploadBot import DataIngestionBot, UploadBotArgumentParser
 import uploadlibrary.PostProcessing as commonprocessors
@@ -47,22 +48,31 @@ def main(args):
             'Cote': (processors.match_identifier_to_categories, {'mapper': mapper}),
         }
         categories_counter, categories_count_per_file = collection.post_process_collection(mapping_methods)
-        #metadata.categorisation_statistics(categories_counter, categories_count_per_file)
+        metadata.categorisation_statistics(categories_counter, categories_count_per_file)
 
     template_name = 'Commons:Batch_uploading/Fonds_Eugène_Trutat_bis/Ingestion'.decode('utf-8').encode('utf-8')
     front_titlefmt = ""
     variable_titlefmt = "%(Titre)s"
     rear_titlefmt = " - Fonds Trutat - %(Cote)s"
-    uploadBot = DataIngestionBot(reader=iter(reversed(collection.records)),
+    reader = iter(reversed(collection.records))
+    reader = itertools.islice(reader, 72, 280)
+    uploadBot = DataIngestionBot(reader=iter(reader),
                                  front_titlefmt=front_titlefmt,
                                  rear_titlefmt=rear_titlefmt,
                                  variable_titlefmt=variable_titlefmt,
                                  pagefmt=template_name,
-                                 subst=True)
+                                 subst=True,
+                                 verifyDescription=False
+                                 )
     if args.upload:
-        uploadBot.doSingle()
+        pass
+        #uploadBot.run()
     elif args.dry_run:
-        uploadBot.dry_run()
+        #for record in collection.records:
+        #    record.to_disk('%(Cote)s', 'toto')
+        s = open('filename.xml', 'w')
+        collection.write_metadata_to_xml(s)
+         #uploadBot.dry_run()
 
 
 if __name__ == "__main__":
